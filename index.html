@@ -7,8 +7,6 @@
  <body>
   <header>
    <h1>lispcord</h1>
-  </header>
-  <header>
    <h3>A wrapper library for the Discordapp bot-api</h3>
   </header>
   <section>
@@ -17,5 +15,120 @@
    to interact with the API, although we are well aware that intuitive is largely 
    subjective :)
   </section>
+  <section>
+   <p>The documentation is seperated into two parts: </p><p> <a 
+   href="#lispcord"><strong>:lispcord</strong></a>, the core functions imported by 
+   the :lispcord package </p><p> <a 
+   href="#lc"><strong>:lispcord.classes</strong></a>, the class functions exported 
+   by the lispcord.classes package </p>
+  </section>
+  <div id=lispcord>
+   <h3>
+    :lispcord</h3>
+   <section>
+    <p>The :lispcord package contains the core functionality of the library, 
+    including the pipe implementation, the REST calls and many user facing 
+    utilities. </p>
+   </section>
+   <div id=defbot style=background-color:#eeeeee>
+    <p>(<strong>defbot</strong> <code>symbol token &amp;key prefix version</code>) 
+    </p><blockquote><p>=&gt; a client instance </p></blockquote><p>Initiates a 
+    client instance and binds it to <code>symbol</code> via 
+    <code>defparameter</code> </p><p>The client instance serves as an authentication 
+    structure for REST-calls, handles all relevant websocket connections and 
+    isolates the wrapper behaviour so more than one bot can be run from the same 
+    script. </p>
+   </div>
+   <div id=connect style=background-color:#eeeeee>
+    <p>(<strong>connect</strong> <code>bot</code>) </p><blockquote><p>=&gt; nil 
+    </p></blockquote><p>Establishes a connection to the websocket and starts the 
+    event loop </p><p>This can be considered "logging in" to the discord API </p>
+   </div>
+   <div id=disconnect
+        style=background-color:#eeeeee>
+    <p>(<strong>disconnect</strong> <code>bot</code>) </p><blockquote><p>=&gt; nil 
+    </p></blockquote><p>Kills the websocket connection and cleans up remaining 
+    threads </p>
+   </div>
+   <div id=commandp
+        style=background-color:#eeeeee>
+    <p>(<strong>commandp</strong> <code>msg &amp;optional bot</code>) 
+    </p><blockquote><p>=&gt; Generalised boolean </p></blockquote><p>Returns true if 
+    the <code>msg</code> object contains a direct mention to the bot, or if it 
+    starts with a character registered with <a 
+    href="#make-prefix"><code>make-prefix</code></a>. </p>
+   </div>
+   <div id=make-prefix
+        style=background-color:#eeeeee>
+    <p>(<strong>make-prefix</strong> <code>character &amp;rest guilds</code>) 
+    </p><blockquote><p>=&gt; <code>guilds</code> if passed, otherwise :global 
+    </p></blockquote><p>Registers the <code>character</code> to be used as a 
+    command-prefix. </p><p>If <code>guilds</code> is passed, the prefix will only be 
+    valid for the given <code>guild</code>-objects. </p>
+   </div>
+   <div id=me style=background-color:#eeeeee>
+    <p>(<strong>me</strong> <code>&amp;optional bot</code>) </p><blockquote><p>=&gt; 
+    an <a href="#lc:user">lc:user</a> object </p></blockquote><p>Returns the user 
+    instance bound to <a href="#*client*">*client*</a> or of the passed bot 
+    instance. </p>
+   </div>
+   <h4>Pipes</h4>
+   <div id=make-pipe
+        style=background-color:#eeeeee>
+    <p>(<strong>make-pipe</strong> <code>&amp;key handlers upstream</code>) 
+    </p><blockquote><p>=&gt; a pipe object </p></blockquote><p>Returns a new pipe 
+    object. </p><p><code>:handlers</code> and <code>:upstream</code> are used to set 
+    the listening functions and the origin to drop the pipe. Usually, there is no 
+    need to set these explicitly </p>
+   </div>
+  </div>
+  <div id=pipe-along
+       style=background-color:#eeeeee>
+   <p>(<strong>pipe-along</strong> <code>pipe cargo</code>) 
+   </p><blockquote><p>=&gt; nil </p></blockquote><p><code>cargo</code> should be a 
+   list. </p><p>Applies <code>cargo</code> to every function in 
+   <code>pipe-handlers</code> of <code>pipe</code>, effectively propagating the 
+   event to the handlers and subpipes. </p>
+  </div>
+  <div id=drop style=background-color:#eeeeee>
+   <p>(<strong>drop</strong> <code>pipe</code>) </p><blockquote><p>=&gt; nil 
+   </p></blockquote><p>Follows the <code>upstream</code> of the pipe and removes 
+   the handler function from their handlers. </p><p>Side-effects: Modifies the 
+   handlers of all pipes listed in <code>pipe-upstream</code>. </p>
+  </div>
+  <div id=pmap style=background-color:#eeeeee>
+   <p>(<strong>pmap</strong> <code>pipe function</code>) </p><blockquote><p>=&gt; a 
+   new pipe </p></blockquote><p>Constructs and returns a new pipe based on 
+   <code>pipe</code>, with every event of the new pipe corresponding to <code>(f 
+   e)</code>,<br /> where <code>f</code> is <code>function</code> and 
+   <code>e</code> is an event of <code>pipe</code>. </p>
+  </div>
+  <div id=pfilter style=background-color:#eeeeee>
+   <p>(<strong>pfilter</strong> <code>pipe predicate</code>) 
+   </p><blockquote><p>=&gt; a new pipe </p></blockquote><p>Constructs a new pipe, 
+   with every event of the new pipe being any event <code>e</code> for which 
+   <code>(predicate e)</code> returns true. </p>
+  </div>
+  <div id=pjoin style=background-color:#eeeeee>
+   <p>(<strong>pjoin</strong> <code>&amp;rest pipes</code>) 
+   </p><blockquote><p>=&gt; a new pipe </p></blockquote><p>Returns a new pipe which 
+   is the union of all <code>pipes</code>. </p>
+  </div>
+  <div id=pfold style=background-color:#eeeeee>
+   <p>(<strong>pfold</strong> <code>pipe function initial-value</code>) 
+   </p><blockquote><p>=&gt; a cargo object 
+   </p></blockquote><p><code>function</code> should be a binary operation<br /> 
+   <code>initial-value</code> will be set as the first value of the cargo 
+   </p><p><code>pfold</code> continously updates the slot of cargo-object by 
+   applying <code>function</code> to the content of cargo alongside the event of 
+   <code>pipe</code>. </p>
+  </div>
+  <div id=from-origin-p
+       style=background-color:#eeeeee>
+   <p>(<strong>from-origin-p</strong> <code>bot</code>) </p><blockquote><p>=&gt; a 
+   generalised boolean </p></blockquote><p>Only meaningful in the context of an 
+   event-dispatch. </p><p>Returns true if <code>bot</code> is the same instance as 
+   the instance which originated the event. </p>
+  </div>
  </body>
 </html>
