@@ -27,108 +27,209 @@
     :lispcord</h3>
    <section>
     <p>The :lispcord package contains the core functionality of the library, 
-    including the pipe implementation, the REST calls and many user facing 
+    including the event-handler implementation, the REST calls and many user facing 
     utilities. </p>
    </section>
-   <div id=defbot style=background-color:#eeeeee>
+   <div id=defbot style=background-color:#f6f6f6>
     <p>(<strong>defbot</strong> <code>symbol token &amp;key prefix version</code>) 
-    </p><blockquote><p>=&gt; a client instance </p></blockquote><p>Initiates a 
-    client instance and binds it to <code>symbol</code> via 
-    <code>defparameter</code> </p><p>The client instance serves as an authentication 
-    structure for REST-calls, handles all relevant websocket connections and 
-    isolates the wrapper behaviour so more than one bot can be run from the same 
-    script. </p>
+    =&gt; a client instance </p><p>Initiates a client instance and binds it to 
+    <code>symbol</code> via <code>defparameter</code> </p><p>The client instance 
+    serves as an authentication structure for REST-calls, handles all relevant 
+    websocket connections and isolates the wrapper behaviour so more than one bot 
+    can be run from the same script. </p>
    </div>
-   <div id=connect style=background-color:#eeeeee>
-    <p>(<strong>connect</strong> <code>bot</code>) </p><blockquote><p>=&gt; nil 
-    </p></blockquote><p>Establishes a connection to the websocket and starts the 
-    event loop </p><p>This can be considered "logging in" to the discord API </p>
+   <div id=connect style=background-color:#f6f6f6>
+    <p>(<strong>connect</strong> <code>bot</code>) =&gt; nil </p><p>Establishes a 
+    connection to the websocket and starts the event loop </p><p>This can be 
+    considered "logging in" to the discord API </p>
    </div>
    <div id=disconnect
-        style=background-color:#eeeeee>
-    <p>(<strong>disconnect</strong> <code>bot</code>) </p><blockquote><p>=&gt; nil 
-    </p></blockquote><p>Kills the websocket connection and cleans up remaining 
-    threads </p>
+        style=background-color:#f6f6f6>
+    <p>(<strong>disconnect</strong> <code>bot</code>) =&gt; nil </p><p>Kills the 
+    websocket connection and cleans up remaining threads </p>
    </div>
    <div id=commandp
-        style=background-color:#eeeeee>
-    <p>(<strong>commandp</strong> <code>msg &amp;optional bot</code>) 
-    </p><blockquote><p>=&gt; Generalised boolean </p></blockquote><p>Returns true if 
-    the <code>msg</code> object contains a direct mention to the bot, or if it 
-    starts with a character registered with <a 
+        style=background-color:#f6f6f6>
+    <p>(<strong>commandp</strong> <code>msg &amp;optional bot</code>) =&gt; 
+    Generalised boolean </p><p>Returns true if the <code>msg</code> object contains 
+    a direct mention to the bot, or if it starts with a character registered with <a 
     href="#make-prefix"><code>make-prefix</code></a>. </p>
    </div>
    <div id=make-prefix
-        style=background-color:#eeeeee>
-    <p>(<strong>make-prefix</strong> <code>character &amp;rest guilds</code>) 
-    </p><blockquote><p>=&gt; <code>guilds</code> if passed, otherwise :global 
-    </p></blockquote><p>Registers the <code>character</code> to be used as a 
-    command-prefix. </p><p>If <code>guilds</code> is passed, the prefix will only be 
-    valid for the given <code>guild</code>-objects. </p>
+        style=background-color:#f6f6f6>
+    <p>(<strong>make-prefix</strong> <code>character &amp;rest guilds</code>) =&gt; 
+    <code>guilds</code> if passed, otherwise :global </p><p>Registers the 
+    <code>character</code> to be used as a command-prefix. </p><p>If 
+    <code>guilds</code> is passed, the prefix will only be valid for the given 
+    <code>guild</code>-objects. </p>
    </div>
-   <div id=me style=background-color:#eeeeee>
-    <p>(<strong>me</strong> <code>&amp;optional bot</code>) </p><blockquote><p>=&gt; 
-    an <a href="#lc:user">lc:user</a> object </p></blockquote><p>Returns the user 
-    instance bound to <a href="#*client*">*client*</a> or of the passed bot 
-    instance. </p>
+   <div id=me style=background-color:#f6f6f6>
+    <p>(<strong>me</strong> <code>&amp;optional bot</code>) =&gt; an <a 
+    href="#lc:user">lc:user</a> object </p><p>Returns the user instance bound to <a 
+    href="#*client*">*client*</a> or of the passed bot instance. </p>
    </div>
-   <h4>Pipes</h4>
-   <div id=make-pipe
-        style=background-color:#eeeeee>
-    <p>(<strong>make-pipe</strong> <code>&amp;key handlers upstream</code>) 
-    </p><blockquote><p>=&gt; a pipe object </p></blockquote><p>Returns a new pipe 
-    object. </p><p><code>:handlers</code> and <code>:upstream</code> are used to set 
-    the listening functions and the origin to drop the pipe. Usually, there is no 
-    need to set these explicitly </p>
+   <h4>Event-Handlers</h4>
+   <div id=add-event-handler
+        style=background-color:#f6f6f6>
+    <p>(<strong>add-event-handler</strong> <code>handler function</code>) =&gt; nil 
+    </p><p>Registers the function for the corresponding event as a handler </p>
    </div>
   </div>
-  <div id=pipe-along
-       style=background-color:#eeeeee>
-   <p>(<strong>pipe-along</strong> <code>pipe cargo</code>) 
-   </p><blockquote><p>=&gt; nil </p></blockquote><p><code>cargo</code> should be a 
-   list. </p><p>Applies <code>cargo</code> to every function in 
-   <code>pipe-handlers</code> of <code>pipe</code>, effectively propagating the 
-   event to the handlers and subpipes. </p>
+  <div id=:on-message-create
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-message-create</strong>&gt; | cargo: lc:message </p><p>Called 
+   when a new message is created in a discord channel </p>
   </div>
-  <div id=drop style=background-color:#eeeeee>
-   <p>(<strong>drop</strong> <code>pipe</code>) </p><blockquote><p>=&gt; nil 
-   </p></blockquote><p>Follows the <code>upstream</code> of the pipe and removes 
-   the handler function from their handlers. </p><p>Side-effects: Modifies the 
-   handlers of all pipes listed in <code>pipe-upstream</code>. </p>
+  <div id=:on-message-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-message-update</strong>&gt; | cargo: lc:message </p><p>Called 
+   when a message is edited </p>
   </div>
-  <div id=pmap style=background-color:#eeeeee>
-   <p>(<strong>pmap</strong> <code>pipe function</code>) </p><blockquote><p>=&gt; a 
-   new pipe </p></blockquote><p>Constructs and returns a new pipe based on 
-   <code>pipe</code>, with every event of the new pipe corresponding to <code>(f 
-   e)</code>,<br /> where <code>f</code> is <code>function</code> and 
-   <code>e</code> is an event of <code>pipe</code>. </p>
+  <div id=:on-message-delete
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-message-delete</strong>&gt; | cargo: snowflake, lc:channel 
+   </p><p>Called when a message is deleted. The Snowflake represents the deleted 
+   message </p>
   </div>
-  <div id=pfilter style=background-color:#eeeeee>
-   <p>(<strong>pfilter</strong> <code>pipe predicate</code>) 
-   </p><blockquote><p>=&gt; a new pipe </p></blockquote><p>Constructs a new pipe, 
-   with every event of the new pipe being any event <code>e</code> for which 
-   <code>(predicate e)</code> returns true. </p>
+  <div id=:on-message-purge
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-message-purge</strong>&gt; | cargo: lc:channel, a vector of 
+   snowflakes </p><p>Called when multi-message-delete occurs. As with 
+   :on-message-delete, the snowflakes represent the deleted messages </p>
   </div>
-  <div id=pjoin style=background-color:#eeeeee>
-   <p>(<strong>pjoin</strong> <code>&amp;rest pipes</code>) 
-   </p><blockquote><p>=&gt; a new pipe </p></blockquote><p>Returns a new pipe which 
-   is the union of all <code>pipes</code>. </p>
+  <div id=:on-reaction-add
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-reaction-add</strong>&gt; | cargo: lc:emoji, snowflake, 
+   lc:user, lc:channel </p><p>Called when a reaction is added to a message. The 
+   message is represented by the snowflake </p>
   </div>
-  <div id=pfold style=background-color:#eeeeee>
-   <p>(<strong>pfold</strong> <code>pipe function initial-value</code>) 
-   </p><blockquote><p>=&gt; a cargo object 
-   </p></blockquote><p><code>function</code> should be a binary operation<br /> 
-   <code>initial-value</code> will be set as the first value of the cargo 
-   </p><p><code>pfold</code> continously updates the slot of cargo-object by 
-   applying <code>function</code> to the content of cargo alongside the event of 
-   <code>pipe</code>. </p>
+  <div id=:on-reaction-remove
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-reaction-remove</strong>&gt; | cargo: lc:emoji, snowflake, 
+   lc:user, lc:channel </p><p>Like <a 
+   href="#:on-reaction-add"><code>:on-reaction-add</code></a>, but dispatches on 
+   removal of the reaction </p>
   </div>
-  <div id=from-origin-p
-       style=background-color:#eeeeee>
-   <p>(<strong>from-origin-p</strong> <code>bot</code>) </p><blockquote><p>=&gt; a 
-   generalised boolean </p></blockquote><p>Only meaningful in the context of an 
-   event-dispatch. </p><p>Returns true if <code>bot</code> is the same instance as 
-   the instance which originated the event. </p>
+  <div id=:on-reaction-purge
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-reaction-purge</strong>&gt; | cargo: lc:channel, snowflake 
+   </p><p>Called when all reactions are removed from a message. The snowflake 
+   represents the message </p>
+  </div>
+  <div id=:on-presence-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-presence-update</strong>&gt; | cargo: lc:presence 
+   </p><p>Called when a user-presence changes </p>
+  </div>
+  <div id=:on-status-ready
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-status-ready</strong>&gt; | cargo: lc:ready </p><p>Called 
+   when the bot succesfully connects to the gateway </p>
+  </div>
+  <div id=:on-status-resumed
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-status-resumed</strong>&gt; | cargo: nil </p><p>Called when 
+   the bot reconnects to the gateway, after it has lost connection. It does not 
+   forward any useful information </p>
+  </div>
+  <div id=:on-typing-start
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-typing-start</strong>&gt; | cargo: lc:user, lc:channel, a 
+   timestamp </p><p>Called when a user sends starts typing </p>
+  </div>
+  <div id=:on-user-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-user-update</strong>&gt; | cargo: lc:user </p><p>Called when 
+   a user updates their profile </p>
+  </div>
+  <div id=:on-channel-create
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-channel-create</strong>&gt; | cargo: lc:channel </p><p>Called 
+   when a channel is created. This might be a guild channel or a DM channel </p>
+  </div>
+  <div id=:on-channel-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-channel-update</strong>&gt; | cargo: lc:channel </p><p>Called 
+   when channel-attributes are changed </p>
+  </div>
+  <div id=:on-channel-delete
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-channel-delete</strong>&gt; | cargo: lc:channel </p><p>Called 
+   when a channel is removed </p>
+  </div>
+  <div id=:on-pin-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-pin-update</strong>&gt; | cargo: lc:channel, a timestamp 
+   </p><p>Called when a message is pinned. Unfortunately, discord does not dispatch 
+   any special event when a pinged message is deleted </p>
+  </div>
+  <div id=:on-guild-create
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-guild-create</strong>&gt; | cargo: lc:guild </p><p>Called 
+   when the client gains access to a new guild </p>
+  </div>
+  <div id=:on-guild-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-guild-update</strong>&gt; | cargo: lc:guild </p><p>Called 
+   when guild-settings are changed </p>
+  </div>
+  <div id=:on-guild-delete
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-guild-delete</strong>&gt; | cargo: lc:guild </p><p>Called 
+   when the bots access to a guild is removed, e.G. because the bot is kicked or 
+   the guild is deleted </p>
+  </div>
+  <div id=:on-member-add
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-member-add</strong>&gt; | cargo: lc:member, lc:guild 
+   </p><p>Called when a user joins a guild the bot can see </p>
+  </div>
+  <div id=:on-member-revmove
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-member-revmove</strong>&gt; | cargo: lc:user, lc:guild 
+   </p><p>Called when a user is kicked from a guild the bot can see </p>
+  </div>
+  <div id=:on-member-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-member-update</strong>&gt; | cargo: lc:member, lc:guild 
+   </p><p>Called when a member is updated </p>
+  </div>
+  <div id=:on-member-ban
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-member-ban</strong>&gt; | cargo: lc:user, lc:guild 
+   </p><p>Called when a member is banned off a server </p>
+  </div>
+  <div id=:on-member-unban
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-member-unban</strong>&gt; | cargo: lc:user, lc:guild 
+   </p><p>Called when a member is unbanned off a server </p>
+  </div>
+  <div id=:on-emoji-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-emoji-update</strong>&gt; | cargo: a vector of lc:emoji, 
+   lc:guild </p><p>Called when the emoji list of a guild is Updated. This may occur 
+   when an emoji is added or removed from a guild </p>
+  </div>
+  <div id=:on-integrations-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-integrations-update</strong>&gt; | cargo: lc:guild 
+   </p><p>Called when the Integrations are updated. I do not know what integrations 
+   are for tbh </p>
+  </div>
+  <div id=:on-role-create
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-role-create</strong>&gt; | cargo: lc:role, lc:guild 
+   </p><p>Called when a role is added to a guild </p>
+  </div>
+  <div id=:on-role-delete
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-role-delete</strong>&gt; | cargo: role-id, guild-id 
+   </p><p>Called when a role is deleted. Note that it sends 2 snowflakes </p>
+  </div>
+  <div id=:on-role-update
+       style=background-color:#f6f6f6>
+   <p>&gt;<strong>:on-role-update</strong>&gt; | cargo: lc:role, lc:guild 
+   </p><p>Called when a role is changed on a guild </p>
   </div>
  </body>
 </html>
